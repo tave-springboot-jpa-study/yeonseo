@@ -6,12 +6,12 @@ import jpabook.jpashop.domain.OrderItem;
 import jpabook.jpashop.domain.OrderStatus;
 import jpabook.jpashop.repository.OrderRepository;
 import jpabook.jpashop.repository.OrderSearch;
-import jpabook.jpashop.repository.query.OrderQueryDto;
-import jpabook.jpashop.repository.query.OrderQueryRepository;
+import jpabook.jpashop.repository.order.query.OrderFlatDto;
+import jpabook.jpashop.repository.order.query.OrderQueryDto;
+import jpabook.jpashop.repository.order.query.OrderQueryRepository;
 import jpabook.jpashop.service.OrderService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.jaxb.SpringDataJaxb;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -76,7 +76,17 @@ public class OrderApiController {
 
     @GetMapping("/api/v4/orders")
     public List<OrderQueryDto> ordersV4() {
-        return orderQueryRepository.fiindOrderQueryDtos();
+        return orderQueryRepository.findOrderQueryDtos();
+    }
+
+    @GetMapping("/api/v5/orders")
+    public List<OrderQueryDto> ordersV5() {
+        return orderQueryRepository.findAllByDto_optimization();
+    }
+
+    @GetMapping("/api/v6/orders")
+    public List<OrderFlatDto> ordersV6() {
+        return orderQueryRepository.findAllByDto_flat();
     }
 
     @Getter
@@ -104,9 +114,9 @@ public class OrderApiController {
     @Getter
     static class OrderItemDto {
 
-        private String itemName;
-        private int orderPrice;
-        private int count;
+        private String itemName; // 상품명
+        private int orderPrice; // 주문 가격
+        private int count; // 주문 수량
 
         public OrderItemDto(OrderItem orderItem) {
             itemName = orderItem.getItem().getName();
